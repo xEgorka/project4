@@ -1,0 +1,292 @@
+basePath: /api
+definitions:
+  models.RequestAddSong:
+    properties:
+      group:
+        example: Muse
+        type: string
+      song:
+        example: Supermassive Black Hole
+        type: string
+    type: object
+  models.RequestUpdateSong:
+    properties:
+      link:
+        example: https://www.youtube.com/watch?v=Xsp3_a-PMTw
+        type: string
+      release_date:
+        example: "2006-07-16T00:00:00Z"
+        format: RFC3339
+        type: string
+      text:
+        example: |-
+          Ooh baby, don't you know I suffer?
+          Ooh baby, can you hear me moan?
+          You caught me under false pretenses
+          How long before you let me go?
+
+          Ooh
+          You set my soul alight
+          Ooh
+          You set my soul alight
+        type: string
+    type: object
+  models.ResponseGetSongText:
+    properties:
+      group:
+        example: Muse
+        type: string
+      id:
+        example: ca1da5fa-50ee-4d00-82e9-d6a578419ad7
+        type: string
+      page:
+        example: 1
+        type: integer
+      size:
+        example: 3
+        type: integer
+      song:
+        example: Supermassive Black Hole
+        type: string
+      total:
+        example: 2
+        type: integer
+      verses:
+        example:
+        - |-
+          Ooh baby don't you know I suffer?
+          Ooh baby can you hear me moan?
+          You caught me under false pretenses
+          How long before you let me go?
+        - |-
+          Ooh
+          You set my soul alight
+          Ooh
+          You set my soul alight
+        items:
+          type: string
+        type: array
+    type: object
+  models.ResponseGetSongs:
+    properties:
+      page:
+        example: 1
+        type: integer
+      size:
+        example: 10
+        type: integer
+      songs:
+        items:
+          $ref: '#/definitions/models.Song'
+        type: array
+    type: object
+  models.Song:
+    properties:
+      group:
+        example: Muse
+        type: string
+      id:
+        example: ca1da5fa-50ee-4d00-82e9-d6a578419ad7
+        type: string
+      link:
+        example: https://www.youtube.com/watch?v=Xsp3_a-PMTw
+        type: string
+      release_date:
+        example: "2006-07-16T00:00:00Z"
+        format: RFC3339
+        type: string
+      song:
+        example: Supermassive Black Hole
+        type: string
+      text:
+        example: |-
+          Ooh baby, don't you know I suffer?
+          Ooh baby, can you hear me moan?
+          You caught me under false pretenses
+          How long before you let me go?
+
+          Ooh
+          You set my soul alight
+          Ooh
+          You set my soul alight
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: x0o1@ya.ru
+  description: Online Song Library.
+  title: Online Song Library API
+  version: "0.1"
+paths:
+  /song:
+    post:
+      consumes:
+      - application/json
+      description: Add song to library
+      parameters:
+      - description: Add song
+        in: body
+        name: song
+        required: true
+        schema:
+          $ref: '#/definitions/models.RequestAddSong'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Song added
+          schema:
+            $ref: '#/definitions/models.Song'
+        "400":
+          description: Bad request
+        "409":
+          description: Song already exists
+        "410":
+          description: Song already deleted
+        "500":
+          description: Internal server error
+      summary: Add song
+      tags:
+      - Songs
+  /song/{id}:
+    delete:
+      description: Delete song from library
+      parameters:
+      - description: Song id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "202":
+          description: Song deleted
+        "204":
+          description: Song not found
+        "500":
+          description: Internal server error
+      summary: Delete song
+      tags:
+      - Songs
+    put:
+      consumes:
+      - application/json
+      description: Update song in library
+      parameters:
+      - description: Song id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update song
+        in: body
+        name: song
+        required: true
+        schema:
+          $ref: '#/definitions/models.RequestUpdateSong'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Song updated
+        "204":
+          description: Song not found
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+      summary: Update song
+      tags:
+      - Songs
+  /song/{id}/text:
+    get:
+      description: Get song text for certain page and page size
+      parameters:
+      - description: Song id
+        in: path
+        name: id
+        required: true
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 3
+        description: Page size
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Song text
+          schema:
+            $ref: '#/definitions/models.ResponseGetSongText'
+        "204":
+          description: Song not found
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+      summary: Get song text
+      tags:
+      - Songs
+  /songs:
+    get:
+      description: Get filtered songs list for certain page and page size
+      parameters:
+      - description: Song id
+        in: query
+        name: id
+        type: string
+      - description: Group
+        in: query
+        name: group
+        type: string
+      - description: Song
+        in: query
+        name: song
+        type: string
+      - default: 16.07.2006
+        description: Release date
+        in: query
+        name: release_date
+        type: string
+      - description: Text
+        in: query
+        name: text
+        type: string
+      - description: Link
+        in: query
+        name: link
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Songs list
+          schema:
+            $ref: '#/definitions/models.ResponseGetSongs'
+        "400":
+          description: Bad request
+        "500":
+          description: Internal server error
+      summary: Get songs
+      tags:
+      - Songs
+swagger: "2.0"
+tags:
+- description: '"Songs requests group."'
+  name: Songs

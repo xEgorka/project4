@@ -1,0 +1,393 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Online Song Library.",
+        "title": "Online Song Library API",
+        "contact": {
+            "email": "x0o1@ya.ru"
+        },
+        "version": "0.1"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api",
+    "paths": {
+        "/song": {
+            "post": {
+                "description": "Add song to library",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Add song",
+                "parameters": [
+                    {
+                        "description": "Add song",
+                        "name": "song",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RequestAddSong"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Song added",
+                        "schema": {
+                            "$ref": "#/definitions/models.Song"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "409": {
+                        "description": "Song already exists"
+                    },
+                    "410": {
+                        "description": "Song already deleted"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/song/{id}": {
+            "put": {
+                "description": "Update song in library",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Update song",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Song id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update song",
+                        "name": "song",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RequestUpdateSong"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Song updated"
+                    },
+                    "204": {
+                        "description": "Song not found"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete song from library",
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Delete song",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Song id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Song deleted"
+                    },
+                    "204": {
+                        "description": "Song not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/song/{id}/text": {
+            "get": {
+                "description": "Get song text for certain page and page size",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Get song text",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Song id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 3,
+                        "description": "Page size",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Song text",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseGetSongText"
+                        }
+                    },
+                    "204": {
+                        "description": "Song not found"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/songs": {
+            "get": {
+                "description": "Get filtered songs list for certain page and page size",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Get songs",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Song id",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Group",
+                        "name": "group",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Song",
+                        "name": "song",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "16.07.2006",
+                        "description": "Release date",
+                        "name": "release_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Text",
+                        "name": "text",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Link",
+                        "name": "link",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Page size",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Songs list",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseGetSongs"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.RequestAddSong": {
+            "type": "object",
+            "properties": {
+                "group": {
+                    "type": "string",
+                    "example": "Muse"
+                },
+                "song": {
+                    "type": "string",
+                    "example": "Supermassive Black Hole"
+                }
+            }
+        },
+        "models.RequestUpdateSong": {
+            "type": "object",
+            "properties": {
+                "link": {
+                    "type": "string",
+                    "example": "https://www.youtube.com/watch?v=Xsp3_a-PMTw"
+                },
+                "release_date": {
+                    "type": "string",
+                    "format": "RFC3339",
+                    "example": "2006-07-16T00:00:00Z"
+                },
+                "text": {
+                    "type": "string",
+                    "example": "Ooh baby, don't you know I suffer?\nOoh baby, can you hear me moan?\nYou caught me under false pretenses\nHow long before you let me go?\n\nOoh\nYou set my soul alight\nOoh\nYou set my soul alight"
+                }
+            }
+        },
+        "models.ResponseGetSongText": {
+            "type": "object",
+            "properties": {
+                "group": {
+                    "type": "string",
+                    "example": "Muse"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "ca1da5fa-50ee-4d00-82e9-d6a578419ad7"
+                },
+                "page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "size": {
+                    "type": "integer",
+                    "example": 3
+                },
+                "song": {
+                    "type": "string",
+                    "example": "Supermassive Black Hole"
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "verses": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "Ooh baby don't you know I suffer?\nOoh baby can you hear me moan?\nYou caught me under false pretenses\nHow long before you let me go?",
+                        "Ooh\nYou set my soul alight\nOoh\nYou set my soul alight"
+                    ]
+                }
+            }
+        },
+        "models.ResponseGetSongs": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "size": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "songs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Song"
+                    }
+                }
+            }
+        },
+        "models.Song": {
+            "type": "object",
+            "properties": {
+                "group": {
+                    "type": "string",
+                    "example": "Muse"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "ca1da5fa-50ee-4d00-82e9-d6a578419ad7"
+                },
+                "link": {
+                    "type": "string",
+                    "example": "https://www.youtube.com/watch?v=Xsp3_a-PMTw"
+                },
+                "release_date": {
+                    "type": "string",
+                    "format": "RFC3339",
+                    "example": "2006-07-16T00:00:00Z"
+                },
+                "song": {
+                    "type": "string",
+                    "example": "Supermassive Black Hole"
+                },
+                "text": {
+                    "type": "string",
+                    "example": "Ooh baby, don't you know I suffer?\nOoh baby, can you hear me moan?\nYou caught me under false pretenses\nHow long before you let me go?\n\nOoh\nYou set my soul alight\nOoh\nYou set my soul alight"
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "description": "\"Songs requests group.\"",
+            "name": "Songs"
+        }
+    ]
+}
